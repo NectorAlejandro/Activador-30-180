@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Generador de activación</title>
+  <style>
+    :root{
+      --bg:#0f172a;
+      --card:#111827;
+      --text:#f9fafb;
+      --muted:#cbd5e1;
+      --ok:#16a34a;
+      --danger:#dc2626;
+      --accent:#2563eb;
+      --border:#334155;
+    }
+
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      font-family:Arial, Helvetica, sans-serif;
+      background:linear-gradient(180deg,#0b1220 0%, #111827 100%);
+      color:var(--text);
+      min-height:100vh;
+      display:flex;
+      justify-content:center;
+      align-items:flex-start;
+      padding:18px;
+    }
+
+    .wrap{
+      width:100%;
+      max-width:520px;
+    }
+
+    .card{
+      background:rgba(17,24,39,.96);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:18px;
+      box-shadow:0 10px 28px rgba(0,0,0,.28);
+    }
+
+    h1{
+      margin:0 0 8px 0;
+      font-size:26px;
+    }
+
+    .sub{
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.45;
+      margin-bottom:18px;
+    }
+
+    .section{
+      margin-top:16px;
+      padding:14px;
+      border:1px solid var(--border);
+      border-radius:14px;
+      background:rgba(31,41,55,.55);
+    }
+
+    .section h2{
+      margin:0 0 12px 0;
+      font-size:18px;
+    }
+
+    label{
+      display:block;
+      font-size:14px;
+      margin:10px 0 6px;
+      color:#e5e7eb;
+    }
+
+    input, button{
+      width:100%;
+      border-radius:12px;
+      border:1px solid #475569;
+      background:#0f172a;
+      color:#fff;
+      padding:12px 14px;
+      font-size:16px;
+      outline:none;
+    }
+
+    input:focus{
+      border-color:#60a5fa;
+      box-shadow:0 0 0 3px rgba(96,165,250,.18);
+    }
+
+    .row{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+
+    .plan-box{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin-top:10px;
+    }
+
+    .plan-btn{
+      border:2px solid #475569;
+      background:#0f172a;
+      color:#fff;
+      padding:14px 10px;
+      border-radius:14px;
+      text-align:center;
+      cursor:pointer;
+      user-select:none;
+      font-weight:bold;
+    }
+
+    .plan-btn small{
+      display:block;
+      margin-top:4px;
+      color:#cbd5e1;
+      font-weight:normal;
+    }
+
+    .plan-btn.active{
+      border-color:#60a5fa;
+      background:#0b254f;
+    }
+
+    .btn{
+      cursor:pointer;
+      font-weight:bold;
+      margin-top:10px;
+    }
+
+    .btn-primary{
+      background:var(--accent);
+      border-color:#3b82f6;
+    }
+
+    .btn-secondary{
+      background:#1e293b;
+    }
+
+    .btn-danger{
+      background:#7f1d1d;
+      border-color:#991b1b;
+    }
+
+    .result{
+      margin-top:14px;
+      background:#0b1220;
+      border:1px dashed #64748b;
+      border-radius:14px;
+      padding:14px;
+      word-break:break-word;
+    }
+
+    .code{
+      font-size:24px;
+      font-weight:bold;
+      letter-spacing:1px;
+      text-align:center;
+      margin:12px 0;
+      color:#f8fafc;
+    }
+
+    .msg{
+      margin-top:12px;
+      padding:12px;
+      border-radius:12px;
+      font-size:14px;
+      line-height:1.45;
+      display:none;
+    }
+
+    .msg.ok{
+      display:block;
+      background:#052e16;
+      border:1px solid #166534;
+      color:#bbf7d0;
+    }
+
+    .msg.err{
+      display:block;
+      background:#3f0d0d;
+      border:1px solid #7f1d1d;
+      color:#fecaca;
+    }
+
+    .confirm-box{
+      margin-top:12px;
+      padding:12px;
+      background:#111827;
+      border:1px solid #475569;
+      border-radius:12px;
+    }
+
+    .confirm-title{
+      font-weight:bold;
+      margin-bottom:8px;
+      color:#f8fafc;
+    }
+
+    .mini{
+      font-size:13px;
+      color:#cbd5e1;
+      line-height:1.45;
+    }
+
+    .hidden{
+      display:none;
+    }
+
+    .footer{
+      margin-top:14px;
+      text-align:center;
+      color:#94a3b8;
+      font-size:12px;
+    }
+
+    @media (max-width: 480px){
+      .row, .plan-box{
+        grid-template-columns:1fr;
+      }
+
+      .code{
+        font-size:20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>Generador de activación</h1>
+      <div class="sub">
+        Elegí el plan correcto, verificá los datos y generá el código.
+      </div>
+
+      <div class="section">
+        <h2>Datos</h2>
+
+        <label for="legajo">Legajo</label>
+        <input id="legajo" type="text" maxlength="20" placeholder="Ej: 123456" />
+
+        <label for="fecha">Fecha</label>
+        <input id="fecha" type="date" />
+
+        <label>Plan</label>
+        <div class="plan-box">
+          <div class="plan-btn active" id="plan30Btn" onclick="seleccionarPlan(30)">
+            30 días
+            <small>Plan mensual</small>
+          </div>
+          <div class="plan-btn" id="plan180Btn" onclick="seleccionarPlan(180)">
+            180 días
+            <small>Plan semestral</small>
+          </div>
+        </div>
+
+        <div class="confirm-box">
+          <div class="confirm-title">Verificación previa</div>
+          <div class="mini" id="resumenSeleccion">
+            Vas a generar un código para <b>30 días</b>.
+          </div>
+        </div>
+
+        <button class="btn btn-primary" onclick="prepararGeneracion()">Generar código</button>
+
+        <div id="mensaje" class="msg"></div>
+
+        <div id="dobleConfirmacion" class="confirm-box hidden">
+          <div class="confirm-title">Confirmación final</div>
+          <div class="mini" id="textoConfirmacionFinal"></div>
+
+          <button class="btn btn-primary" onclick="generarCodigo()">Sí, generar ahora</button>
+          <button class="btn btn-secondary" onclick="cancelarConfirmacion()">No, volver atrás</button>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Resultado</h2>
+        <div class="result">
+          <div class="code" id="codigoGenerado">— — —</div>
+
+          <div class="row">
+            <button class="btn btn-secondary" onclick="copiarCodigo()">Copiar código</button>
+            <button class="btn btn-danger" onclick="limpiarTodo()">Limpiar</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer">Generador compatible con tu VBA</div>
+    </div>
+  </div>
+
+  <script>
+    const SEMILLA = 6121936;
+    const DIAS_PLAN_MENSUAL = 30;
+    const DIAS_PLAN_SEMESTRAL = 180;
+
+    let planSeleccionado = 30;
+
+    window.addEventListener("load", () => {
+      const hoy = new Date();
+      document.getElementById("fecha").value = hoy.toISOString().slice(0, 10);
+      actualizarResumenPlan();
+    });
+
+    function seleccionarPlan(dias) {
+      planSeleccionado = dias;
+      document.getElementById("plan30Btn").classList.toggle("active", dias === 30);
+      document.getElementById("plan180Btn").classList.toggle("active", dias === 180);
+      actualizarResumenPlan();
+      ocultarConfirmacion();
+      limpiarMensaje();
+    }
+
+    function actualizarResumenPlan() {
+      document.getElementById("resumenSeleccion").innerHTML =
+        `Vas a generar un código para <b>${planSeleccionado} días</b>.`;
+    }
+
+    function mostrarMensaje(texto, tipo) {
+      const box = document.getElementById("mensaje");
+      box.className = "msg " + tipo;
+      box.textContent = texto;
+    }
+
+    function limpiarMensaje() {
+      const box = document.getElementById("mensaje");
+      box.className = "msg";
+      box.textContent = "";
+    }
+
+    function prepararGeneracion() {
+      limpiarMensaje();
+
+      const legajo = normalizarLegajo(document.getElementById("legajo").value);
+      const fecha = document.getElementById("fecha").value;
+
+      if (!legajo) {
+        mostrarMensaje("Tenés que ingresar el legajo.", "err");
+        return;
+      }
+
+      if (!fecha) {
+        mostrarMensaje("Tenés que indicar la fecha.", "err");
+        return;
+      }
+
+      document.getElementById("textoConfirmacionFinal").textContent =
+        `Confirmá que vas a generar un código para ${planSeleccionado} días, legajo ${legajo}, fecha ${formatearFecha(fecha)}.`;
+
+      document.getElementById("dobleConfirmacion").classList.remove("hidden");
+    }
+
+    function cancelarConfirmacion() {
+      ocultarConfirmacion();
+      mostrarMensaje("Generación cancelada.", "ok");
+    }
+
+    function ocultarConfirmacion() {
+      document.getElementById("dobleConfirmacion").classList.add("hidden");
+    }
+
+    function limpiarTodo() {
+      document.getElementById("legajo").value = "";
+      document.getElementById("codigoGenerado").textContent = "— — —";
+      limpiarMensaje();
+      ocultarConfirmacion();
+      seleccionarPlan(30);
+    }
+
+    async function copiarCodigo() {
+      const codigo = document.getElementById("codigoGenerado").textContent.trim();
+
+      if (!codigo || codigo === "— — —") {
+        mostrarMensaje("No hay ningún código generado para copiar.", "err");
+        return;
+      }
+
+      try {
+        await navigator.clipboard.writeText(codigo);
+        mostrarMensaje("Código copiado correctamente.", "ok");
+      } catch {
+        mostrarMensaje("No se pudo copiar automáticamente.", "err");
+      }
+    }
+
+    function generarCodigo() {
+      limpiarMensaje();
+      ocultarConfirmacion();
+
+      const legajo = normalizarLegajo(document.getElementById("legajo").value);
+      const fecha = document.getElementById("fecha").value;
+
+      if (!legajo || !fecha) {
+        mostrarMensaje("Faltan datos obligatorios.", "err");
+        return;
+      }
+
+      const codigo = generarCodigoPlan(legajo, fecha, planSeleccionado);
+      document.getElementById("codigoGenerado").textContent = codigo;
+      mostrarMensaje(`Código generado correctamente para ${planSeleccionado} días.`, "ok");
+    }
+
+    function generarCodigoPlan(legajo, fechaISO, diasPlan) {
+      legajo = normalizarLegajo(legajo);
+
+      let legPart = legajoProcesado(legajo);
+      let datePart = fechaProcesada(fechaISO);
+
+      legPart = soloDigitos(legPart).padStart(3, "0").slice(-3);
+      datePart = soloDigitos(datePart).padStart(5, "0").slice(-5);
+
+      const base = parseInt(legPart, 10) + parseInt(datePart, 10) + SEMILLA;
+      const baseStr = String(base).padStart(7, "0").slice(-7);
+
+      const num4 =
+        baseStr.charAt(0) +
+        baseStr.charAt(2) +
+        baseStr.charAt(4) +
+        baseStr.charAt(6);
+
+      let r = base % 26;
+
+      if (diasPlan === DIAS_PLAN_MENSUAL) {
+        if (r > 12) r = r - 13;
+      } else if (diasPlan === DIAS_PLAN_SEMESTRAL) {
+        if (r < 13) r = r + 13;
+      }
+
+      const r2 = (r + 3) % 26;
+      const r3 = (r + 23) % 26;
+
+      const letras =
+        String.fromCharCode(65 + r) +
+        String.fromCharCode(65 + r2) +
+        String.fromCharCode(65 + r3);
+
+      return `${legPart}-${datePart}-${letras}-${num4}`;
+    }
+
+    function legajoProcesado(legajo) {
+      const rev = reverseText(legajo);
+      return (rev[0] || "") + (rev[2] || "") + (rev[4] || "");
+    }
+
+    function fechaProcesada(fechaISO) {
+      const [yyyy, mm, dd] = fechaISO.split("-");
+      const s = `${dd}${mm}${yyyy}`;
+      const rev = reverseText(s);
+
+      return (rev[0] || "") + (rev[1] || "") + (rev[3] || "") + (rev[5] || "") + (rev[7] || "");
+    }
+
+    function normalizarLegajo(legajo) {
+      let s = String(legajo || "").trim();
+      s = s.replace(/ /g, "").replace(/\./g, "").replace(/-/g, "").replace(/_/g, "");
+      s = soloDigitos(s);
+
+      if (s.length >= 6) {
+        return s.slice(0, 6);
+      } else {
+        return s.padStart(6, "0");
+      }
+    }
+
+    function soloDigitos(s) {
+      return String(s).replace(/\D/g, "");
+    }
+
+    function reverseText(s) {
+      return String(s).split("").reverse().join("");
+    }
+
+    function formatearFecha(fecha) {
+      const [y, m, d] = fecha.split("-");
+      return `${d}/${m}/${y}`;
+    }
+  </script>
+</body>
+</html>
